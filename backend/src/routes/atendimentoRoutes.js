@@ -25,9 +25,18 @@ const router = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Atendimento'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Atendimentos encontrados com sucesso.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Atendimento'
  *       500:
  *         description: Erro interno no servidor
  *         content:
@@ -56,7 +65,16 @@ router.get("/", atendimentoController.listar);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Atendimento'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Atendimento encontrado com sucesso.
+ *                 data:
+ *                   $ref: '#/components/schemas/Atendimento'
  *       400:
  *         description: ID inválido
  *         content:
@@ -90,7 +108,16 @@ router.get("/:id", atendimentoController.buscarPorId);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Atendimento'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Atendimento criado com sucesso.
+ *                 data:
+ *                   $ref: '#/components/schemas/Atendimento'
  *       400:
  *         description: Dados inválidos
  *         content:
@@ -125,7 +152,16 @@ router.post("/", atendimentoController.criar);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Atendimento'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Atendimento atualizado com sucesso.
+ *                 data:
+ *                   $ref: '#/components/schemas/Atendimento'
  *       400:
  *         description: Dados ou ID inválidos
  *         content:
@@ -157,6 +193,20 @@ router.put("/:id", atendimentoController.atualizar);
  *     responses:
  *       200:
  *         description: Atendimento excluído com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Atendimento excluído com sucesso.
+ *                 data:
+ *                   nullable: true
+ *                   example: null
  *       400:
  *         description: ID inválido
  *         content:

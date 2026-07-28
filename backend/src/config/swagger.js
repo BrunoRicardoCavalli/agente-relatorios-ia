@@ -102,9 +102,19 @@ const options = {
           type: "object",
 
           properties: {
-            erro: {
+            status: {
+              type: "string",
+              example: "error",
+            },
+
+            message: {
               type: "string",
               example: "Atendimento não encontrado.",
+            },
+
+            error: {
+              nullable: true,
+              example: null,
             },
           },
         },

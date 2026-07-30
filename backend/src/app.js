@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const swaggerUi = require("swagger-ui-express");
 
 const atendimentoRoutes = require("./routes/atendimentoRoutes");
+const aiRoutes = require("./ai/aiRoutes"); // NOVO
+
 const errorHandler = require("./middlewares/errorHandler");
 const notFound = require("./middlewares/notFound");
 const swaggerSpec = require("./config/swagger");
@@ -27,6 +29,7 @@ app.use(
 );
 
 app.use("/api/atendimentos", atendimentoRoutes);
+app.use("/api/ai", aiRoutes); // NOVO
 
 // Deve ficar depois das rotas
 app.use(notFound);

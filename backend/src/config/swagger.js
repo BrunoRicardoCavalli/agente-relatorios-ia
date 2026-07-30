@@ -122,7 +122,8 @@ const options = {
     },
   },
 
-  apis: ["./src/routes/*.js"],
+  // Procura documentação Swagger em toda a pasta src
+  apis: ["./src/**/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

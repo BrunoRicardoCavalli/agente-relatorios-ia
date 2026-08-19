@@ -5,8 +5,10 @@ import AtendimentoTable from "./components/AtendimentoTable";
 import DesempenhoAtendentes from "./components/DesempenhoAtendentes";
 import GraficoDesempenho from "./components/GraficoDesempenho";
 import FiltroPeriodo from "./components/FiltroPeriodo";
+import Navbar from "./components/Navbar";
 
 import CadastroAtendimento from "./pages/CadastroAtendimento";
+import Atendimentos from "./pages/Atendimentos";
 
 import {
   listarAtendimentos,
@@ -14,6 +16,9 @@ import {
 } from "./services/api";
 
 import "./App.css";
+
+
+
 
 function App() {
   // =====================================================
@@ -331,6 +336,10 @@ function App() {
 
   return (
     <div className="app">
+      <Navbar
+        pagina={pagina}
+        setPagina={setPagina}
+      />
 
       {/* =================================================
           HEADER
@@ -385,6 +394,20 @@ function App() {
             }
           />
         )}
+
+
+        {/* =================================================
+        ATENDIMENTOS
+      ================================================= */}
+
+     {pagina === "atendimentos" && (
+  <Atendimentos
+    atendimentos={atendimentos}
+    onEditar={editarAtendimento}
+    onExcluir={excluirAtendimento}
+  />
+)}
+
 
         {/* =================================================
             DASHBOARD

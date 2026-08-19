@@ -660,3 +660,85 @@ tbody tr:last-child td {
     width: 100%;
   }
 }
+/* ================================
+   AÇÕES DA TABELA
+================================ */
+
+.acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.acoes button {
+  border: none;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.botao-editar {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.botao-editar:hover {
+  background: #bae6fd;
+}
+
+.botao-excluir {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.botao-excluir:hover {
+  background: #fecaca;
+}
+
+/* =====================================================
+   AÇÕES DA TABELA
+===================================================== */
+
+.acoes-tabela {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* =====================================================
+   BOTÃO EDITAR
+===================================================== */
+
+.botao-editar {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #e8f1ff;
+  color: #2563eb;
+}
+
+.botao-editar:hover {
+  background: #dbeafe;
+}
+
+/* =====================================================
+   BOTÃO EXCLUIR
+===================================================== */
+
+.botao-excluir {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.botao-excluir:hover {
+  background: #fecaca;
+}

@@ -1,36 +1,112 @@
-const API_URL = "http://localhost:3000/api";
+import api from "../api/axios";
+
+// =====================================================
+// LISTAR ATENDIMENTOS
+// =====================================================
 
 export async function listarAtendimentos() {
-  const resposta = await fetch(`${API_URL}/atendimentos`);
+  try {
+    const resposta = await api.get("/atendimentos");
 
-  if (!resposta.ok) {
+    return resposta.data.data;
+  } catch (error) {
     throw new Error(
-      "Não foi possível carregar os atendimentos."
+      error.response?.data?.message ||
+        "Não foi possível carregar os atendimentos.",
+      {
+        cause: error,
+      }
     );
   }
-
-  const resultado = await resposta.json();
-
-  return resultado.data;
 }
 
-export async function criarAtendimento(dados) {
-  const resposta = await fetch(`${API_URL}/atendimentos`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(dados),
-  });
+// =====================================================
+// BUSCAR ATENDIMENTO POR ID
+// =====================================================
 
-  const resultado = await resposta.json();
+export async function buscarAtendimentoPorId(id) {
+  try {
+    const resposta = await api.get(`/atendimentos/${id}`);
 
-  if (!resposta.ok) {
+    return resposta.data.data;
+  } catch (error) {
     throw new Error(
-      resultado.message ||
-      "Não foi possível cadastrar o atendimento."
+      error.response?.data?.message ||
+        "Não foi possível buscar o atendimento.",
+      {
+        cause: error,
+      }
     );
   }
+}
 
-  return resultado.data;
+// =====================================================
+// CRIAR ATENDIMENTO
+// =====================================================
+
+export async function criarAtendimento(dados) {
+  try {
+    const resposta = await api.post(
+      "/atendimentos",
+      dados
+    );
+
+    return resposta.data.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Não foi possível cadastrar o atendimento.",
+      {
+        cause: error,
+      }
+    );
+  }
+}
+
+// Compatibilidade com componentes antigos
+export const cadastrarAtendimento = criarAtendimento;
+
+// =====================================================
+// ATUALIZAR ATENDIMENTO
+// =====================================================
+
+export async function atualizarAtendimento(id, dados) {
+  try {
+    const resposta = await api.put(
+      `/atendimentos/${id}`,
+      dados
+    );
+
+    return resposta.data.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Não foi possível atualizar o atendimento.",
+      {
+        cause: error,
+      }
+    );
+  }
+}
+
+// =====================================================
+// EXCLUIR ATENDIMENTO
+// =====================================================
+
+export async function excluirAtendimento(id) {
+  try {
+    const resposta = await api.delete(
+      `/atendimentos/${id}`
+    );
+
+    return resposta.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Não foi possível excluir o atendimento.",
+      {
+        cause: error,
+      }
+    );
+  }
 }

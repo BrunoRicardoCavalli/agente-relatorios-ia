@@ -10,38 +10,55 @@ import CadastroAtendimento from "./pages/CadastroAtendimento";
 
 import {
   listarAtendimentos,
+  excluirAtendimento,
 } from "./services/api";
 
 import "./App.css";
 
 function App() {
+  // =====================================================
+  // ESTADOS
+  // =====================================================
+
   const [atendimentos, setAtendimentos] = useState([]);
-  const [carregando, setCarregando] = useState(true);
+
+  const [carregando, setCarregando] =
+    useState(true);
+
   const [erro, setErro] = useState("");
-  const [periodo, setPeriodo] = useState("todos");
 
-  // =====================================================
-  // CONTROLE DA PÁGINA
-  // =====================================================
+  const [periodo, setPeriodo] =
+    useState("todos");
 
-  const [pagina, setPagina] = useState("dashboard");
+  // Página atual
+  const [pagina, setPagina] =
+    useState("dashboard");
+
+  // Atendimento que está sendo editado
+  const [
+    atendimentoEditando,
+    setAtendimentoEditando,
+  ] = useState(null);
 
   // =====================================================
   // CARREGAR ATENDIMENTOS
   // =====================================================
 
   async function carregarAtendimentos() {
-    try {
-      setCarregando(true);
-      setErro("");
+    setCarregando(true);
+    setErro("");
 
-      const resposta = await listarAtendimentos();
+    try {
+      const resposta =
+        await listarAtendimentos();
 
       if (Array.isArray(resposta)) {
         setAtendimentos(resposta);
       } else {
         setAtendimentos([]);
-        setErro("Formato de resposta inválido.");
+        setErro(
+          "Formato de resposta inválido."
+        );
       }
     } catch (error) {
       setErro(
@@ -54,18 +71,16 @@ function App() {
   }
 
   // =====================================================
-  // CARREGAR AO ABRIR O SISTEMA
+  // CARREGAR AO ABRIR
   // =====================================================
 
   useEffect(() => {
     let ativo = true;
 
-    async function carregar() {
+    async function carregarInicial() {
       try {
-        setCarregando(true);
-        setErro("");
-
-        const resposta = await listarAtendimentos();
+        const resposta =
+          await listarAtendimentos();
 
         if (!ativo) {
           return;
@@ -75,7 +90,9 @@ function App() {
           setAtendimentos(resposta);
         } else {
           setAtendimentos([]);
-          setErro("Formato de resposta inválido.");
+          setErro(
+            "Formato de resposta inválido."
+          );
         }
       } catch (error) {
         if (ativo) {
@@ -91,7 +108,7 @@ function App() {
       }
     }
 
-    carregar();
+    carregarInicial();
 
     return () => {
       ativo = false;
@@ -99,178 +116,205 @@ function App() {
   }, []);
 
   // =====================================================
+  // ABRIR NOVO CADASTRO
+  // =====================================================
+
+  function abrirNovoAtendimento() {
+    setAtendimentoEditando(null);
+    setPagina("cadastro");
+  }
+
+  // =====================================================
+  // ABRIR EDIÇÃO
+  // =====================================================
+
+  function editarAtendimento(atendimento) {
+    setAtendimentoEditando(atendimento);
+    setPagina("cadastro");
+  }
+
+  // =====================================================
+  // CANCELAR CADASTRO / EDIÇÃO
+  // =====================================================
+
+  function voltarDashboard() {
+    setAtendimentoEditando(null);
+    setPagina("dashboard");
+  }
+
+  // =====================================================
+  // APÓS CADASTRAR / EDITAR
+  // =====================================================
+
+  async function finalizarCadastro() {
+    await carregarAtendimentos();
+
+    setAtendimentoEditando(null);
+
+    setPeriodo("todos");
+
+    setPagina("dashboard");
+  }
+
+  // =====================================================
+  // EXCLUIR
+  // =====================================================
+
+  async function excluir(atendimento) {
+    const confirmar = window.confirm(
+      `Deseja realmente excluir o atendimento de ${atendimento.atendente}?`
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    try {
+      await excluirAtendimento(
+        atendimento.id
+      );
+
+      await carregarAtendimentos();
+    } catch (error) {
+      setErro(
+        error.message ||
+          "Não foi possível excluir o atendimento."
+      );
+    }
+  }
+
+  // =====================================================
   // FILTRO POR PERÍODO
   // =====================================================
 
-  const atendimentosFiltrados = atendimentos.filter(
-    (atendimento) => {
+  const atendimentosFiltrados =
+    atendimentos.filter(
+      (atendimento) => {
+        if (periodo === "todos") {
+          return true;
+        }
 
-      // -----------------------------------------------
-      // TODOS
-      // -----------------------------------------------
+        if (!atendimento.data_atendimento) {
+          return false;
+        }
 
-      if (periodo === "todos") {
-        return true;
-      }
-
-      // -----------------------------------------------
-      // VERIFICA DATA
-      // -----------------------------------------------
-
-      if (!atendimento.data_atendimento) {
-        return false;
-      }
-
-      /*
-        A API retorna:
-
-        2026-08-03T03:00:00.000Z
-        2026-07-30T03:00:00.000Z
-        2026-07-24T03:00:00.000Z
-
-        Pegamos somente YYYY-MM-DD.
-      */
-
-      const dataAtendimento = String(
-        atendimento.data_atendimento
-      ).substring(0, 10);
-
-      if (
-        !/^\d{4}-\d{2}-\d{2}$/.test(
-          dataAtendimento
-        )
-      ) {
-        return false;
-      }
-
-      // -----------------------------------------------
-      // PEGAR DATAS VÁLIDAS
-      // -----------------------------------------------
-
-      const datas = atendimentos
-        .map((item) => {
-
-          if (!item.data_atendimento) {
-            return null;
-          }
-
-          const data = String(
-            item.data_atendimento
+        const dataAtendimento =
+          String(
+            atendimento.data_atendimento
           ).substring(0, 10);
 
-          if (
-            !/^\d{4}-\d{2}-\d{2}$/.test(data)
-          ) {
-            return null;
-          }
+        if (
+          !/^\d{4}-\d{2}-\d{2}$/.test(
+            dataAtendimento
+          )
+        ) {
+          return false;
+        }
 
-          return data;
-        })
-        .filter(Boolean);
+        const datas = atendimentos
+          .map((item) => {
+            if (
+              !item.data_atendimento
+            ) {
+              return null;
+            }
 
-      if (datas.length === 0) {
-        return false;
+            const data =
+              String(
+                item.data_atendimento
+              ).substring(0, 10);
+
+            if (
+              !/^\d{4}-\d{2}-\d{2}$/.test(
+                data
+              )
+            ) {
+              return null;
+            }
+
+            return data;
+          })
+          .filter(Boolean);
+
+        if (datas.length === 0) {
+          return false;
+        }
+
+        const dataReferencia =
+          [...datas].sort().at(-1);
+
+        let quantidadeDias;
+
+        if (periodo === "7dias") {
+          quantidadeDias = 7;
+        } else if (
+          periodo === "30dias"
+        ) {
+          quantidadeDias = 30;
+        } else if (
+          periodo === "90dias"
+        ) {
+          quantidadeDias = 90;
+        } else {
+          return true;
+        }
+
+        const referencia =
+          new Date(
+            `${dataReferencia}T00:00:00`
+          );
+
+        referencia.setDate(
+          referencia.getDate() -
+            quantidadeDias
+        );
+
+        const ano =
+          referencia.getFullYear();
+
+        const mes = String(
+          referencia.getMonth() + 1
+        ).padStart(2, "0");
+
+        const dia = String(
+          referencia.getDate()
+        ).padStart(2, "0");
+
+        const dataLimite =
+          `${ano}-${mes}-${dia}`;
+
+        return (
+          dataAtendimento >=
+            dataLimite &&
+          dataAtendimento <=
+            dataReferencia
+        );
       }
-
-      // -----------------------------------------------
-      // DATA MAIS RECENTE
-      // -----------------------------------------------
-
-      const dataReferencia = [...datas]
-        .sort()
-        .at(-1);
-
-      // -----------------------------------------------
-      // QUANTIDADE DE DIAS
-      // -----------------------------------------------
-
-      let quantidadeDias;
-
-      if (periodo === "7dias") {
-        quantidadeDias = 7;
-      } else if (periodo === "30dias") {
-        quantidadeDias = 30;
-      } else if (periodo === "90dias") {
-        quantidadeDias = 90;
-      } else {
-        return true;
-      }
-
-      // -----------------------------------------------
-      // CALCULAR DATA LIMITE
-      // -----------------------------------------------
-
-      const referencia = new Date(
-        `${dataReferencia}T00:00:00`
-      );
-
-      referencia.setDate(
-        referencia.getDate() -
-          quantidadeDias
-      );
-
-      const ano =
-        referencia.getFullYear();
-
-      const mes = String(
-        referencia.getMonth() + 1
-      ).padStart(2, "0");
-
-      const dia = String(
-        referencia.getDate()
-      ).padStart(2, "0");
-
-      const dataLimite =
-        `${ano}-${mes}-${dia}`;
-
-      // -----------------------------------------------
-      // COMPARAÇÃO
-      // -----------------------------------------------
-
-      return (
-        dataAtendimento >= dataLimite &&
-        dataAtendimento <= dataReferencia
-      );
-    }
-  );
+    );
 
   // =====================================================
-  // TOTAL DE CHAMADAS
+  // TOTAIS
   // =====================================================
 
   const totalChamadas =
     atendimentosFiltrados.reduce(
-      (total, atendimento) => {
-        return (
-          total +
-          Number(
-            atendimento.chamadas || 0
-          )
-        );
-      },
+      (total, atendimento) =>
+        total +
+        Number(
+          atendimento.chamadas || 0
+        ),
       0
     );
-
-  // =====================================================
-  // TOTAL DE PROMESSAS
-  // =====================================================
 
   const totalPromessas =
     atendimentosFiltrados.reduce(
-      (total, atendimento) => {
-        return (
-          total +
-          Number(
-            atendimento.promessas || 0
-          )
-        );
-      },
+      (total, atendimento) =>
+        total +
+        Number(
+          atendimento.promessas || 0
+        ),
       0
     );
-
-  // =====================================================
-  // TAXA DE PROMESSAS
-  // =====================================================
 
   const taxaPromessas =
     totalChamadas > 0
@@ -282,7 +326,7 @@ function App() {
       : "0.0";
 
   // =====================================================
-  // RENDERIZAÇÃO
+  // INTERFACE
   // =====================================================
 
   return (
@@ -305,15 +349,11 @@ function App() {
           </p>
         </div>
 
-        {/* =================================================
-            BOTÃO NOVO ATENDIMENTO
-        ================================================= */}
-
         {pagina === "dashboard" && (
           <button
             className="botao-novo"
-            onClick={() =>
-              setPagina("cadastro")
+            onClick={
+              abrirNovoAtendimento
             }
           >
             + Novo atendimento
@@ -323,28 +363,26 @@ function App() {
       </header>
 
       {/* =================================================
-          CONTEÚDO
+          CONTAINER
       ================================================= */}
 
       <div className="container">
 
         {/* =================================================
-            PÁGINA DE CADASTRO
+            CADASTRO / EDIÇÃO
         ================================================= */}
 
         {pagina === "cadastro" && (
           <CadastroAtendimento
-            onVoltar={() =>
-              setPagina("dashboard")
+            atendimento={
+              atendimentoEditando
             }
-            onCadastrado={async () => {
-
-              await carregarAtendimentos();
-
-              setPeriodo("todos");
-
-              setPagina("dashboard");
-            }}
+            onVoltar={
+              voltarDashboard
+            }
+            onCadastrado={
+              finalizarCadastro
+            }
           />
         )}
 
@@ -354,21 +392,14 @@ function App() {
 
         {pagina === "dashboard" && (
           <>
-            {/* =============================================
-                CARREGANDO
-            ============================================== */}
-
             {carregando && (
               <div className="mensagem">
                 <p>
-                  Carregando atendimentos...
+                  Carregando
+                  atendimentos...
                 </p>
               </div>
             )}
-
-            {/* =============================================
-                ERRO
-            ============================================== */}
 
             {erro && (
               <div className="erro">
@@ -378,17 +409,11 @@ function App() {
               </div>
             )}
 
-            {/* =============================================
-                DASHBOARD PRINCIPAL
-            ============================================== */}
-
             {!carregando &&
               !erro && (
                 <main>
 
-                  {/* =======================================
-                      FILTRO
-                  ======================================== */}
+                  {/* FILTRO */}
 
                   <div className="dashboard-toolbar">
 
@@ -401,9 +426,7 @@ function App() {
 
                   </div>
 
-                  {/* =======================================
-                      CARDS
-                  ======================================== */}
+                  {/* CARDS */}
 
                   <section className="cards">
 
@@ -435,9 +458,7 @@ function App() {
 
                   </section>
 
-                  {/* =======================================
-                      DESEMPENHO
-                  ======================================== */}
+                  {/* DESEMPENHO */}
 
                   <DesempenhoAtendentes
                     atendimentos={
@@ -445,9 +466,7 @@ function App() {
                     }
                   />
 
-                  {/* =======================================
-                      GRÁFICO
-                  ======================================== */}
+                  {/* GRÁFICO */}
 
                   <GraficoDesempenho
                     atendimentos={
@@ -455,9 +474,7 @@ function App() {
                     }
                   />
 
-                  {/* =======================================
-                      TABELA
-                  ======================================== */}
+                  {/* TABELA */}
 
                   <section className="tabela-container">
 
@@ -473,7 +490,8 @@ function App() {
                           {
                             atendimentosFiltrados.length
                           }{" "}
-                          registros encontrados
+                          registros
+                          encontrados
                         </span>
 
                       </div>
@@ -483,6 +501,12 @@ function App() {
                     <AtendimentoTable
                       atendimentos={
                         atendimentosFiltrados
+                      }
+                      onEditar={
+                        editarAtendimento
+                      }
+                      onExcluir={
+                        excluir
                       }
                     />
 

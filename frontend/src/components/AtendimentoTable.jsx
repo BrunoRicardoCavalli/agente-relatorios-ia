@@ -1,4 +1,8 @@
-function AtendimentoTable({ atendimentos }) {
+function AtendimentoTable({
+  atendimentos,
+  onEditar,
+  onExcluir,
+}) {
   if (atendimentos.length === 0) {
     return (
       <div className="mensagem">
@@ -18,6 +22,7 @@ function AtendimentoTable({ atendimentos }) {
             <th>Chamadas</th>
             <th>Promessas</th>
             <th>Observação</th>
+            <th>Ações</th>
           </tr>
         </thead>
 
@@ -40,7 +45,33 @@ function AtendimentoTable({ atendimentos }) {
 
               <td>{atendimento.promessas}</td>
 
-              <td>{atendimento.observacao}</td>
+              <td>
+                {atendimento.observacao || "-"}
+              </td>
+
+              <td>
+                <div className="acoes-tabela">
+                  <button
+                    type="button"
+                    className="botao-editar"
+                    onClick={() =>
+                      onEditar(atendimento)
+                    }
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    className="botao-excluir"
+                    onClick={() =>
+                      onExcluir(atendimento)
+                    }
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

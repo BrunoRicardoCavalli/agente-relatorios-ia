@@ -358,17 +358,6 @@ function App() {
           </p>
         </div>
 
-        {pagina === "dashboard" && (
-          <button
-            className="botao-novo"
-            onClick={
-              abrirNovoAtendimento
-            }
-          >
-            + Novo atendimento
-          </button>
-        )}
-
       </header>
 
       {/* =================================================
@@ -405,6 +394,7 @@ function App() {
     atendimentos={atendimentos}
     onEditar={editarAtendimento}
     onExcluir={excluirAtendimento}
+    onNovo={abrirNovoAtendimento}
   />
 )}
 

@@ -10,24 +10,42 @@ function Navbar({ pagina, setPagina }) {
       <nav>
         <button
           type="button"
-          className={pagina === "dashboard" ? "ativo" : ""}
-          onClick={() => setPagina("dashboard")}
+          className={
+            pagina === "dashboard"
+              ? "ativo"
+              : ""
+          }
+          onClick={() =>
+            setPagina("dashboard")
+          }
         >
           Dashboard
         </button>
 
         <button
           type="button"
-          className={pagina === "atendimentos" ? "ativo" : ""}
-          onClick={() => setPagina("atendimentos")}
+          className={
+            pagina === "atendimentos"
+              ? "ativo"
+              : ""
+          }
+          onClick={() =>
+            setPagina("atendimentos")
+          }
         >
           Atendimentos
         </button>
 
         <button
           type="button"
-          className={pagina === "cadastro" ? "ativo" : ""}
-          onClick={() => setPagina("cadastro")}
+          className={
+            pagina === "cadastro"
+              ? "ativo"
+              : ""
+          }
+          onClick={() =>
+            setPagina("cadastro")
+          }
         >
           + Novo atendimento
         </button>

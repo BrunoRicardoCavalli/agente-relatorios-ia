@@ -742,3 +742,51 @@ tbody tr:last-child td {
 .botao-excluir:hover {
   background: #fecaca;
 }
+
+/* =====================================================
+   PÁGINA DE ATENDIMENTOS
+===================================================== */
+
+.atendimentos-page {
+  width: 100%;
+}
+
+.busca-atendimentos {
+  padding: 20px 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.busca-atendimentos label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.busca-atendimentos input {
+  width: 100%;
+
+  max-width: 420px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 6px;
+
+  font-size: 14px;
+
+  outline: none;
+}
+
+.busca-atendimentos input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 2px rgba(37, 99, 235, 0.1);
+}
